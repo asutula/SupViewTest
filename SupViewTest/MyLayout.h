@@ -11,5 +11,6 @@
 @interface MyLayout : UICollectionViewLayout
 
 @property (nonatomic, assign) BOOL displaySup;
+@property (nonatomic, assign) CGFloat transition;
 
 @end

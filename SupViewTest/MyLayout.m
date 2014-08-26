@@ -19,11 +19,9 @@
         [array addObject:attributes];
     }
     
-    if (self.displaySup) {
-        UICollectionViewLayoutAttributes *supAttributes = [self layoutAttributesForSupplementaryViewOfKind:@"supView" atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        if (supAttributes && CGRectIntersectsRect(rect, supAttributes.frame)) {
-            [array addObject:supAttributes];
-        }
+    UICollectionViewLayoutAttributes *supAttributes = [self layoutAttributesForSupplementaryViewOfKind:@"supView" atIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    if (supAttributes && CGRectIntersectsRect(rect, supAttributes.frame)) {
+        [array addObject:supAttributes];
     }
     
     return array;
@@ -40,22 +38,7 @@
 {
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
     attributes.frame = CGRectMake(100, 220, 20, 20);
-    return attributes;
-}
-
-- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingSupplementaryElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)elementIndexPath
-{
-    UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
-    attributes.alpha = 0;
-    attributes.frame = CGRectOffset(attributes.frame, 10, 0);
-    return attributes;
-}
-
-- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingSupplementaryElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)elementIndexPath
-{
-    UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
-    attributes.alpha = 0;
-    attributes.frame = CGRectOffset(attributes.frame, 10, 0);
+    attributes.alpha = self.transition;
     return attributes;
 }
 

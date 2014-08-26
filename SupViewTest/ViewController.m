@@ -11,21 +11,41 @@
 #import "MySupView.h"
 
 @interface ViewController ()
-
+@property (nonatomic, strong) CADisplayLink *link;
 @end
 
 @implementation ViewController
+
+- (void)updateLayout:(CADisplayLink *)sender
+{
+    static CGFloat const kTransitionInterval = 0.05;
+    MyLayout *layout = (MyLayout *)self.collectionView.collectionViewLayout;
+    if (layout.displaySup)
+    {
+        layout.transition += kTransitionInterval;
+    }
+    else
+    {
+        layout.transition -= kTransitionInterval;
+    }
+    
+    [layout invalidateLayout];
+    
+    if ((layout.displaySup && layout.transition >= 1) ||
+        (!layout.displaySup && layout.transition <= 0))
+    {
+        [self.link invalidate];
+        self.link = nil;
+    }
+}
 
 - (IBAction)add:(id)sender
 {
     MyLayout *layout = (MyLayout *)self.collectionView.collectionViewLayout;
     layout.displaySup = YES;
     
-//    [layout invalidateLayout];
-    
-    [self.collectionView performBatchUpdates:^{
-        [layout invalidateLayout];
-    } completion:nil];
+    self.link = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateLayout:)];
+    [self.link addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 - (IBAction)remove:(id)sender
@@ -33,11 +53,8 @@
     MyLayout *layout = (MyLayout *)self.collectionView.collectionViewLayout;
     layout.displaySup = NO;
     
-//    [layout invalidateLayout];
-    
-    [self.collectionView performBatchUpdates:^{
-        [layout invalidateLayout];
-    } completion:nil];
+    self.link = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateLayout:)];
+    [self.link addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
